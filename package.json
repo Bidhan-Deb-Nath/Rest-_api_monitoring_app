@@ -1,0 +1,17 @@
+{
+  "name": "rest-api",
+  "version": "1.0.0",
+  "description": "using node js",
+  "main": "app.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "NODE_ENV=staging nodemon app.js",
+    "production": "NODE_ENV=production nodemon app.js"
+
+  },
+  "repository": "http://github.com/Bidhan-Deb-Nath",
+  "author": "Bidhan Deb Nath",
+  "license": "ISC",
+  "private": true
+}
