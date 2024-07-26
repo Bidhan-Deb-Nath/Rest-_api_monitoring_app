@@ -11,10 +11,10 @@ user.postMethod = (requestedProperties, callback) => {
     const Agreements = typeof(requestedProperties.body.Agreements) === 'boolean' && requestedProperties.body.Agreements === true ? requestedProperties.body.Agreements : false;
     
     if (FirstName && LastName && PhoneNumber && Password && Agreements) {
-        readUserDataLibrary('Data', PhoneNumber, error => {
+        readUserDataLibrary('Users', PhoneNumber, error => {
             const userObject = { FirstName, LastName, PhoneNumber, Password: hash(Password), Agreements };
             if (error) {
-             createUserDataLibrary('Data', PhoneNumber, userObject, error => {
+             createUserDataLibrary('Users', PhoneNumber, userObject, error => {
                     if (!error) {
                       callback(200, { Message: 'User was created...' });   
                     } else {

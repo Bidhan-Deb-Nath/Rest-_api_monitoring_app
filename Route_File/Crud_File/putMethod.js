@@ -12,14 +12,14 @@ user.putMethod = (requestedProperties, callback) => {
 
     if (PhoneNumber) {
         if (FirstName || LastName || Password) {
-            readUserDataLibrary('Data', PhoneNumber, (error, userData) => {
+            readUserDataLibrary('Users', PhoneNumber, (error, userData) => {
                 if (!error && userData) {
                     if (FirstName) { userData.FirstName = FirstName };
                     if (LastName) { userData.LastName = LastName };
                     if (Password) { userData.Password = hash(Password) };
                     if (Agreements) { userData.Agreements = Agreements }; // Ensure Agreements is always true
 
-                    updateUserDataLibrary('Data', PhoneNumber, userData, error => {
+                    updateUserDataLibrary('Users', PhoneNumber, userData, error => {
                         if (!error) {
                             callback(200, { Message: 'User was updated successfully.' });   
                         } else {
