@@ -8,7 +8,7 @@ user.deleteMethod = (requestedProperties, callback) => {
     if (PhoneNumber) {
         readUserDataLibrary('Users', PhoneNumber, (error, userData) => {
             if (!error && userData) {
-                deleteUserDataLibrary('Data', PhoneNumber, error => {
+                deleteUserDataLibrary('Users', PhoneNumber, error => {
                     if (error) {
                         callback(200, { Message: 'User deleted successfully.' });
                     } else {

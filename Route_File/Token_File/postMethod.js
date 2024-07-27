@@ -1,18 +1,28 @@
 const token = require('./token');
 const { readUserDataLibrary } = require('../../Library/readUserDataLibrary');
-const { hash } = require('../../Helpers/utilities');
+const { createUserDataLibrary } = require('../../Library/createUserDataLibrary');
+const { hash, parseData, createRandomString } = require('../../Helpers/utilities');
 
 token.postMethod = (requestedProperties, callback) => {
     const PhoneNumber = typeof (requestedProperties.body.PhoneNumber) === 'string' && requestedProperties.body.PhoneNumber.trim().length === 11 ? requestedProperties.body.PhoneNumber : false;
-    const Password = typeof (requestedProperties.body.Password) === 'string' && requestedProperties.body.Password.trim.length > 0 ? requestedProperties.body.Password : false;
+    const Password = typeof (requestedProperties.body.Password) === 'string' && requestedProperties.body.Password.trim().length > 0 ? requestedProperties.body.Password : false;
     if (PhoneNumber && Password) {
         readUserDataLibrary('Users', PhoneNumber, (error, userData) => {
-            let hashedPassword = hash(Password);
-            if (hashedPassword === userData.Password) {
-                
-                // next day -->
+            const hashedPassword = hash(Password);
+            const userPassword = userData.Password;
+            if (hashedPassword === userPassword) {
+                let tokenId = createRandomString(20);
+                let expiresTime = (Date.now() * 60 * 60 * 1000);
+                const tokenObject = { PhoneNumber, 'id': tokenId, expiresTime };
+                createUserDataLibrary('Tokens', tokenId, tokenObject, error => {
+                    if (!error) {
+                        callback(200, tokenObject);
+                    } else {
+                        callback(500, { Error: 'There was a problem in server site!' });  
+                    }
+                })
             } else {
-                callback(401, {Error : 'Invalid Password' });
+                callback(401, {Error : 'Password is not valid!' });
             }
         })
     } else {
