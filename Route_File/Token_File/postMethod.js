@@ -22,7 +22,7 @@ token.postMethod = (requestedProperties, callback) => {
                     }
                 })
             } else {
-                callback(401, {Error : 'Password is not valid!' });
+                callback(400, {Error : 'Password is not valid!' });
             }
         })
     } else {
