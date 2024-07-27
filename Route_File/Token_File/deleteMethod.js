@@ -6,7 +6,7 @@ token.deleteMethod = (requestedProperties, callback) => {
     if (TokenID) {
         deleteUserDataLibrary('Tokens', TokenID, error => {
             if (error) {
-                callback(200, { Message: 'Token id is deleted successfully.' });
+                callback(200, { Message: 'Token was successfully deleted.' });
             } else {
                 callback(500, { Message: 'There was a server site error.' });               
             }
