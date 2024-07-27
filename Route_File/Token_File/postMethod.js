@@ -11,10 +11,10 @@ token.postMethod = (requestedProperties, callback) => {
             const hashedPassword = hash(Password);
             const userPassword = userData.Password;
             if (hashedPassword === userPassword) {
-                let tokenId = createRandomString(20);
-                let expiresTime = (Date.now() * 60 * 60 * 1000);
-                const tokenObject = { PhoneNumber, 'id': tokenId, expiresTime };
-                createUserDataLibrary('Tokens', tokenId, tokenObject, error => {
+                let TokenID = createRandomString(20);
+                let expiresTime = (Date.now() + 60 * 60 * 1000);
+                const tokenObject = { TokenID, 'Phone_number':PhoneNumber, 'Validation_time':expiresTime };
+                createUserDataLibrary('Tokens', TokenID, tokenObject, error => {
                     if (!error) {
                         callback(200, tokenObject);
                     } else {
