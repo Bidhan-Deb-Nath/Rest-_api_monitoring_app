@@ -1,7 +1,7 @@
 const token = require('./token');
 const { readUserDataLibrary } = require('../../Library/readUserDataLibrary');
 const { createUserDataLibrary } = require('../../Library/createUserDataLibrary');
-const { hash, parseData, createRandomString } = require('../../Helpers/utilities');
+const { hash, createRandomString } = require('../../Helpers/utilities');
 
 token.postMethod = (requestedProperties, callback) => {
     const PhoneNumber = typeof (requestedProperties.body.PhoneNumber) === 'string' && requestedProperties.body.PhoneNumber.trim().length === 11 ? requestedProperties.body.PhoneNumber : false;

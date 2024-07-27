@@ -3,7 +3,7 @@ const url = require('url');
 const { StringDecoder } = require('string_decoder');
 const router = require('../Router/router');
 const { notFound } = require('../Route_File/notFound');
-const { parseData } = require('../Helpers/utilities');
+const { parseJson } = require('../Helpers/utilities');
 
 parameters.request_response = (request, response) => {
     const parsedUrl = url.parse(request.url, true);
@@ -21,7 +21,9 @@ parameters.request_response = (request, response) => {
     request.on('data', buffer => realData += decoder.write(buffer));
     request.on('end', () => {
         realData += decoder.end();
-        requestedProperties.body = parseData(realData);
+
+        console.log("Received data:", realData); // Add logging here
+         requestedProperties.body = parseJson(realData);
         chooseRoute(requestedProperties, (statusCode, payload) => {
             statusCode = typeof (statusCode) === 'number' ? statusCode : 500;
             payload = typeof (payload) === 'object' ? payload : {};
@@ -31,12 +33,6 @@ parameters.request_response = (request, response) => {
             response.writeHead(statusCode);
             response.end(payloadStringify);
         });
-    });
-
-    request.on('error', error => {
-        console.error('Request Error:', error);
-        response.writeHead(500);
-        response.end('Internal Server Error');
     });
 };
 

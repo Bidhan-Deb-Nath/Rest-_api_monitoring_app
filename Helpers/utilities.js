@@ -17,15 +17,15 @@ utilities.hash = userPassword => {
     }
 };
 
-// Function to parse a user data -->
-utilities.parseData = parsedData => {
+utilities.parseJson = jsonString => {
     let output;
+
     try {
-        output = JSON.parse(parsedData);
-    } catch (error) {
-        console.error("Error parsing data:", error);
+        output = JSON.parse(jsonString);
+    } catch {
         output = {}; // Ensure output is initialized to an empty object if parsing fails
     }
+
     return output;
 };
 
