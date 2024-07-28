@@ -105,3 +105,4 @@ user.getMethod = (requestedProperties, callback) => {
 
 module.exports = user;
 
+

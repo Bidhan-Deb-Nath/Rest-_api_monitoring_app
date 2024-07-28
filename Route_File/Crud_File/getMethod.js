@@ -4,26 +4,31 @@ const { verify } = require('../Token_File/verify');
 
 user.getMethod = (requestedProperties, callback) => {
     const PhoneNumber = typeof (requestedProperties.queryStringObject.PhoneNumber) === 'string' && requestedProperties.queryStringObject.PhoneNumber.trim().length === 11 ? requestedProperties.queryStringObject.PhoneNumber : false;
-    console.log('PhoneNumber : ',PhoneNumber);
+    
     if (PhoneNumber) {
-        const Token = typeof (requestedProperties.headersObject.Token) === 'string' ? requestedProperties.headersObject.Token : false;
-        console.log('Token : ', Token);
+        const token = typeof (requestedProperties.headersObject.token) === 'string' ? requestedProperties.headersObject.token : false;
         
-        verify(Token, PhoneNumber, (TokenID) => {
-            if (TokenID) {
+        verify(token, PhoneNumber, (isValid) => {
+            
+            if (isValid) {
+                console.log('Token verification succeeded.');
                 readUserDataLibrary('Users', PhoneNumber, (error, userData) => {
                     if (!error && userData) {
                         delete userData.Password;
                         callback(200, userData);
                     } else {
-                        callback(404, { Error: 'Your requested user is not found!' }); 
+                        console.log('User data not found or error:', error);
+                        callback(404, { Error: 'Your requested user is not found!' });
                     }
                 }); 
             } else {
-                callback(403, { Error: 'Authentication failure!' });  
+                console.log('Token verification failed.');
+                callback(403, { Error: 'Authentication failure!' });
             }
-        })
+        });
+
     } else {
+        console.log('Invalid phone number provided.');
         callback(400, { Error: 'Invalid phone number provided' });
     }
 };
