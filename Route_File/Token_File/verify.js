@@ -5,12 +5,12 @@ token.verify = (TokenID, PhoneNumber, callback) => {
     readUserDataLibrary('Tokens', TokenID, (error, tokenData) => {
         if (!error, tokenData) {
             if (tokenData.PhoneNumber === PhoneNumber && tokenData.Validation_time > Date.now()) {
-                callback(null, true);
+                callback(true);
             } else {
-                callback(null, false);
+                callback(false);
             }
         } else {
-           callback(null, false);
+           callback(false);
 
         }
     })

@@ -4,10 +4,12 @@ const { verify } = require('../Token_File/verify');
 
 user.getMethod = (requestedProperties, callback) => {
     const PhoneNumber = typeof (requestedProperties.queryStringObject.PhoneNumber) === 'string' && requestedProperties.queryStringObject.PhoneNumber.trim().length === 11 ? requestedProperties.queryStringObject.PhoneNumber : false;
+    console.log('PhoneNumber : ',PhoneNumber);
     if (PhoneNumber) {
         const Token = typeof (requestedProperties.headersObject.Token) === 'string' ? requestedProperties.headersObject.Token : false;
-
-        verify( Token, PhoneNumber, (TokenID) => {
+        console.log('Token : ', Token);
+        
+        verify(Token, PhoneNumber, (TokenID) => {
             if (TokenID) {
                 readUserDataLibrary('Users', PhoneNumber, (error, userData) => {
                     if (!error && userData) {

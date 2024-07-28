@@ -22,7 +22,7 @@ parameters.request_response = (request, response) => {
     request.on('end', () => {
         realData += decoder.end();
 
-        console.log("Received data:", realData); // Add logging here
+        // console.log("Received data:", realData); // Add logging here
          requestedProperties.body = parseJson(realData);
         chooseRoute(requestedProperties, (statusCode, payload) => {
             statusCode = typeof (statusCode) === 'number' ? statusCode : 500;
