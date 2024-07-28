@@ -9,7 +9,7 @@ user.getMethod = (requestedProperties, callback) => {
         const token = typeof (requestedProperties.headersObject.token) === 'string' ? requestedProperties.headersObject.token : false;
         
         verify(token, PhoneNumber, (isValid) => {
-            
+
             if (isValid) {
                 console.log('Token verification succeeded.');
                 readUserDataLibrary('Users', PhoneNumber, (error, userData) => {
@@ -21,6 +21,7 @@ user.getMethod = (requestedProperties, callback) => {
                         callback(404, { Error: 'Your requested user is not found!' });
                     }
                 }); 
+                
             } else {
                 console.log('Token verification failed.');
                 callback(403, { Error: 'Authentication failure!' });

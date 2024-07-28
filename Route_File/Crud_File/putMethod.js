@@ -2,6 +2,8 @@ const user = require('./user');
 const { readUserDataLibrary } = require('../../Library/readUserDataLibrary');
 const { updateUserDataLibrary } = require('../../Library/updateUserDataLibrary');
 const { hash } = require('../../Helpers/utilities');
+const { verify } = require('../Token_File/verify');
+
 
 user.putMethod = (requestedProperties, callback) => {
     const FirstName = typeof (requestedProperties.body.FirstName) === 'string' && requestedProperties.body.FirstName.trim().length > 0 ? requestedProperties.body.FirstName : false;
@@ -12,22 +14,32 @@ user.putMethod = (requestedProperties, callback) => {
 
     if (PhoneNumber) {
         if (FirstName || LastName || Password) {
-            readUserDataLibrary('Users', PhoneNumber, (error, userData) => {
-                if (!error && userData) {
-                    if (FirstName) { userData.FirstName = FirstName };
-                    if (LastName) { userData.LastName = LastName };
-                    if (Password) { userData.Password = hash(Password) };
-                    if (Agreements) { userData.Agreements = Agreements }; // Ensure Agreements is always true
+        const token = typeof (requestedProperties.headersObject.token) === 'string' ? requestedProperties.headersObject.token : false;
+        
+            verify(token, PhoneNumber, (isValid) => {
+            
+                if (isValid) {
+                    readUserDataLibrary('Users', PhoneNumber, (error, userData) => {
+                        if (!error && userData) {
+                            if (FirstName) { userData.FirstName = FirstName };
+                            if (LastName) { userData.LastName = LastName };
+                            if (Password) { userData.Password = hash(Password) };
+                            if (Agreements) { userData.Agreements = Agreements }; // Ensure Agreements is always true
 
-                    updateUserDataLibrary('Users', PhoneNumber, userData, error => {
-                        if (!error) {
-                            callback(200, { Message: 'User was updated successfully.' });   
+                            updateUserDataLibrary('Users', PhoneNumber, userData, error => {
+                                if (!error) {
+                                    callback(200, { Message: 'User was updated successfully.' });
+                                } else {
+                                    callback(500, { Error: 'There was a problem on the server side!' });
+                                }
+                            });
                         } else {
-                            callback(500, { Error: 'There was a problem on the server side!' });
+                            callback(400, { Error: 'Your requested user is not found!' });
                         }
                     });
                 } else {
-                    callback(400, { Error: 'Your requested user is not found!' });
+                    console.log('Token verification failed.');
+                    callback(403, { Error: 'Authentication failure!' });
                 }
             });
         } else {
