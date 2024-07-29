@@ -10,7 +10,7 @@ token.tokenPath = (requestedProperties, callback) => {
     if (acceptedMethod.indexOf(requestedProperties.method > -1)) {
         token[requestedProperties.method](requestedProperties, callback);
     } else {
-        callback(405, {Error : 'Your requested method is not allowed!'} );
+        callback(405, {Error : 'Token : Your requested method is not allowed!'} );
     }
 };
 

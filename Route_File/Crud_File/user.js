@@ -10,7 +10,7 @@ user.userPath = (requestedProperties, callback) => {
     if (acceptedMethod.indexOf(requestedProperties.method) > -1) {
         user[requestedProperties.method](requestedProperties, callback);
     } else {
-        callback(404, { Error: 'Method is not found!' });
+        callback(404, { Error: 'User : Your requested method is not allowed!' });
     }
 };
 
