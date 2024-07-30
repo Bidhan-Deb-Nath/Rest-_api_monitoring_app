@@ -70,39 +70,60 @@ app.startServer();
     "Agreements": true
 }
 
+{
+    "protocol": "http",
+    "url": "google.com",
+    "method": "GET",
+    "successCode": [
+        200,
+        201
+    ],
+    "timeOutSeconds": 2
+}
 
-const user = require('./user');
-const { readUserDataLibrary } = require('../../Library/readUserDataLibrary');
-const { verify } = require('../Token_File/verify');
 
-user.getMethod = (requestedProperties, callback) => {
-    const PhoneNumber = typeof (requestedProperties.queryStringObject.PhoneNumber) === 'string' && requestedProperties.queryStringObject.PhoneNumber.trim().length === 11 ? requestedProperties.queryStringObject.PhoneNumber : false;
-    if (PhoneNumber) {
-        const Token = typeof (requestedProperties.headersObject.Token) === 'string' ? requestedProperties.headersObject.Token : false;
-
-        if (Token) {
-            verify(Token, PhoneNumber, (isValidToken) => {
-                if (isValidToken) {
-                    readUserDataLibrary('Users', PhoneNumber, (error, userData) => {
-                        if (!error && userData) {
-                            delete userData.Password;
-                            callback(200, userData);
-                        } else {
-                            callback(404, { Error: 'Your requested user is not found!' });
-                        }
-                    });
-                } else {
-                    callback(403, { Error: 'Authentication failure!' });
-                }
-            });
-        } else {
-            callback(400, { Error: 'Token not provided' });
-        }
-    } else {
-        callback(400, { Error: 'Invalid phone number provided' });
-    }
-};
-
-module.exports = user;
-
+ readUserDataLibrary('Tokens', token, (error, tokenData) => {
+            if (!error && tokenData) {
+                const phoneNumber = tokenData.Phone_number;
+                readUserDataLibrary('Users', phoneNumber, (error, userData) => {
+                    if (!error && userData) {
+                        verify(token, phoneNumber, tokenIsValid => {
+                            if (tokenIsValid) {
+                                const userChecks = typeof (userData.checks) === 'object' && userData.checks instanceof Array ? userData.checks : [];
+                                if (userChecks.length < maximumChecks) {
+                                    const checkId = createRandomString(20);
+                                    const checkData = { checkId, phoneNumber, protocol, url, method, successCode, timeOutSeconds };
+                                    createUserDataLibrary('Checks', checkId, checkData, (error) => { 
+                                        if (!error) { 
+                                            userData.checks = userChecks;
+                                            userData.checks.push(checkId);
+                                            updateUserDataLibrary('Users', phoneNumber, userData, (error) => { 
+                                                if (error) {
+                                                    callback( 200, { Message: `Check created successfully.Check data is : ${checkData}` });
+                                                 } else {
+                                                    callback(500, { Error: 'There was  a problem in server side!' })
+                                                };
+                                            });
+                                            callback(null, { checkId });
+                                        } else {
+                                            callback(500, { Error: 'There was  a problem in server side!' });                                            
+                                        }
+                                     });
+                                } else {
+                                    callback(401, { Error: 'User has already reached max checked limit!' });                   
+                                }
+                            } else {
+                                callback(403, { Error: 'Authentication failure!' });    
+                            }
+                        })
+                    } else {
+                        callback(404, { Error: 'User not found!' });
+                        
+                    }
+                })
+            } else {
+                callback(403, { Error: 'Authentication problem!' });
+                
+            }
+        });
 
