@@ -24,12 +24,12 @@ check.postMethod = (requestedProperties, callback) => {
                             if (tokenIsValid) {
                                 const userChecks = typeof (userData.checks) === 'object' && userData.checks instanceof Array ? userData.checks : [];
                                 if (userChecks.length < maximumChecks) {
-                                    const checkId = createRandomString(20);
-                                    const checkData = { checkId, phoneNumber, protocol, url, method, successCode, timeOutSeconds };
-                                    createUserDataLibrary('Checks', checkId, checkData, (error) => {
+                                    const checkID = createRandomString(20);
+                                    const checkData = { checkID, phoneNumber, protocol, url, method, successCode, timeOutSeconds };
+                                    createUserDataLibrary('Checks', checkID, checkData, (error) => {
                                         if (!error) {
                                             userData.checks = userChecks;
-                                            userData.checks.push(checkId);
+                                            userData.checks.push(checkID);
                                             updateUserDataLibrary('Users', phoneNumber, userData, (error) => {
                                                 if (!error) {
                                                     return callback(200, checkData);
