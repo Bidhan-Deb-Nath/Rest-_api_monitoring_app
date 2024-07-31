@@ -18,7 +18,7 @@ check.getMethod = (requestedProperties, callback) => {
                     }
                 })
             } else {
-                callback(500, { Error: 'You have a problem in your request!' });                
+                callback(400, { Error: 'You have a problem in your request!' });                
             }
         })
     } else {

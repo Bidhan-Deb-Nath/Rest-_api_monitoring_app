@@ -5,7 +5,8 @@ const { verify } = require('../Token_File/verify');
 const { updateUserDataLibrary } = require('../../Library/updateUserDataLibrary');
 
 check.putMethod = (requestedProperties, callback) => {
-    const checkID = typeof (requestedProperties.queryStringObject.checkID) === 'string' && requestedProperties.queryStringObject.checkID.trim().length === 20 ? requestedProperties.queryStringObject.checkID : false;
+    const checkID = typeof (requestedProperties.body.checkID) === 'string' && requestedProperties.body.checkID.trim().length === 20 ? requestedProperties.body.checkID : false;
+
     const protocol = typeof (requestedProperties.body.protocol) === 'string' && ['http', 'https'].indexOf(requestedProperties.body.protocol) > -1 ? requestedProperties.body.protocol : false;
     const url = typeof (requestedProperties.body.url) === 'string' && requestedProperties.body.url.trim().length > 0 ? requestedProperties.body.url : false;
     const method = typeof (requestedProperties.body.method) === 'string' && ['POST', 'GET', 'PUT', 'DELETE'].indexOf(requestedProperties.body.method) > -1 ? requestedProperties.body.method : false;
